@@ -1,0 +1,28 @@
+{
+  "name": "mkrep",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "mkrep": "bin.js"
+  },
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cuid": "^2.1.8",
+    "vitest": "^0.22.1"
+  },
+  "dependencies": {
+    "commander": "^9.4.0",
+    "dotenv": "^16.0.1",
+    "execa": "^6.1.0",
+    "inquirer": "^9.1.0",
+    "redaxios": "^0.5.1"
+  }
+}
