@@ -29,8 +29,8 @@ mkrep my-new-project
 - `git init`
 - `npm init -y`
 - `git add . && git commit -m "Initial commit"`
-- Going to Github to create a new repository
-- `git remote add origin git@github.com:matschik/my-new-project.git`
+- Going to Github.com to create a new repository
+- `git remote add origin git@github.com:username/my-new-project.git`
 - `git push -u origin main`
 
 ## ⚖️ License
