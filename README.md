@@ -11,6 +11,5 @@
 ## Installation
 
 ```sh
-git clone https://github.com/matschik/mkrep.git
-npm i -g .
+npm i -g mkrep
 ```
