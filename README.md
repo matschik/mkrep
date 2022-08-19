@@ -1,5 +1,7 @@
 # mkrep
 
+> Create your local & Github repository instantly
+
 ## Requirements
 
 - SSH Github key
@@ -9,6 +11,6 @@
 ## Installation
 
 ```sh
-git clone {}
+git clone https://github.com/matschik/mkrep.git
 npm i -g .
 ```
