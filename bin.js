@@ -1,19 +1,25 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import inquirer from "inquirer";
-import { join } from "path";
+import { join } from "node:path";
 import { isPathAvailable } from "./src/lib.js";
 import dotEnvFile from "./dotEnvFile.js";
 import mkrep from "./src/mkrep.js";
+import fileDirname from "./src/fileDirname.js";
+import { readFileSync } from "fs";
 
 dotEnvFile.init();
 
 const program = new Command();
 
+const version = JSON.parse(
+  readFileSync(join(fileDirname(import.meta.url), "package.json"))
+).version;
+
 program
   .name("mkrep")
   .description("Fast repo creation local & remote with Github")
-  .version("0.1.0")
+  .version(version)
   .action(async (_, { args }) => {
     const [repoName] = args;
     await getGithubPersonalToken();
