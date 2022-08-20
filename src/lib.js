@@ -1,21 +1,76 @@
-import { access, mkdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import {
+  access,
+  lstat,
+  mkdir,
+  readFile,
+  rename,
+  writeFile,
+} from "node:fs/promises";
+import { join, sep } from "node:path";
 import fileDirname from "./fileDirname.js";
-import { gitInit } from "./git.js";
+import { gitInit, gitRemoteUpdateOrigin } from "./git.js";
+import { fetchGithubCurrentUser, updateGithubRepository } from "./githubAPI.js";
 
-export async function createLocalRepo(path) {
+export async function renameGithubRepository(repoName, newRepoName) {
+  const { data: user } = await fetchGithubCurrentUser();
+  const { data: updatedRepository } = await updateGithubRepository(
+    user.login,
+    repoName,
+    { name: newRepoName }
+  );
+  return updatedRepository;
+}
+
+export async function updatePackageJson(pkgJsonPath, data) {
+  const content = await readFile(pkgJsonPath, "utf8");
+  const pkgJson = JSON.parse(content);
+  const newPkgJson = Object.assign({}, pkgJson, data);
+  await writeFile(pkgJsonPath, JSON.stringify(newPkgJson, null, 2));
+}
+
+export async function renameLocalRepository(path, newName, sshURL) {
+  const pathInfo = await lstat(path);
+  if (!pathInfo.isDirectory()) {
+    throw new Error(`'${path}' is not a directory`);
+  }
+
+  const newPath = path.split(sep).slice(0, -1).concat([newName]).join(sep);
+
+  const pkgJsonPath = join(newPath, "package.json");
+
+  const pkgJsonAvailable = await isPathAvailable(pkgJsonPath);
+
+  await Promise.all([
+    rename(path, newPath),
+    pkgJsonAvailable
+      ? updatePackageJson(pkgJsonPath, {
+          name: newName,
+        })
+      : true,
+    sshURL ? gitRemoteUpdateOrigin(newPath, sshURL) : true,
+  ]);
+
+  return newPath;
+}
+
+export async function createGitRepository(path) {
   await mkdir(path);
   await gitInit(path);
   return path;
 }
 
-export async function createPackageJson(basePath, name = "new-js-project") {
+export async function createPackageJson(basePath, data) {
   const path = join(basePath, "/package.json");
-  const template = await readFile(
+  let template = await readFile(
     `${fileDirname(import.meta.url)}/template/package.json`,
     "utf8"
   );
-  await writeFile(path, template.replace("{name}", name));
+
+  for (const key of Object.keys(data)) {
+    template = template.replace(`{${key}}`, data[key]);
+  }
+
+  await writeFile(path, template);
   return path;
 }
 

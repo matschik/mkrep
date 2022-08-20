@@ -28,6 +28,14 @@ export async function createGithubRepository(name, isPrivate = true) {
   return api().post(`/user/repos`, { name, private: isPrivate });
 }
 
+export async function updateGithubRepository(user, repo, data) {
+  return api().patch(`/repos/${user}/${repo}`, data);
+}
+
+export async function deleteGithubRepository(user, repo) {
+  return api().delete(`/repos/${user}/${repo}`);
+}
+
 export async function isGithubRepositoryAvailable(name) {
   const {
     data: { login },

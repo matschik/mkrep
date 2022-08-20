@@ -10,6 +10,12 @@ export async function gitRemoteAddOrigin(execPath, url) {
   });
 }
 
+export async function gitRemoteUpdateOrigin(execPath, url) {
+  await execa("git", ["remote", "set-url", "origin", url], {
+    cwd: execPath,
+  });
+}
+
 export async function gitAddAll(execPath) {
   await execa("git", ["add", "."], { cwd: execPath });
 }

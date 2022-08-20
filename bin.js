@@ -2,7 +2,12 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
 import { join } from "node:path";
-import { isPathAvailable } from "./src/lib.js";
+import {
+  isPathAvailable,
+  renameGithubRepository,
+  renameLocalRepository,
+  updatePackageJson,
+} from "./src/lib.js";
 import dotEnvFile from "./dotEnvFile.js";
 import mkrep from "./src/mkrep.js";
 import fileDirname from "./src/fileDirname.js";
@@ -31,14 +36,50 @@ program
       await getGithubPersonalToken();
       const baseDir = await getBaseDir();
 
-      await mkrep(baseDir, repoName, {
+      const repoPath = await mkrep(baseDir, repoName, {
         async onReadyToCreate(p) {
           await confirmCreateRepository(p);
         },
       });
+      console.info(`✨ Repo created at ${repoPath}`);
+
+      const { confirm } = await inquirer.prompt([
+        {
+          type: "confirm",
+          name: "confirm",
+          message: `Do you want to open your new repository '${repoName}' with VSCode ?`,
+        },
+      ]);
+
+      if (confirm) {
+        await execa("code", [repoPath]);
+      } else {
+        console.info(
+          `You can open your new repository via 'mkrep open my-project'`
+        );
+      }
     }
 
     exec().catch(console.error);
+  });
+
+program
+  .command("rename <repoName> <newRepoName>")
+  .description("Rename repository local & remote on Github")
+  .action(async (repoName, newRepoName) => {
+    const baseDir = await getBaseDir();
+    const repoPath = join(baseDir, repoName);
+    const updatedRepository = await renameGithubRepository(
+      repoName,
+      newRepoName
+    );
+    const newRepoPath = await renameLocalRepository(
+      repoPath,
+      newRepoName,
+      updatedRepository.ssh_url
+    );
+
+    console.info(`✨ Repo renamed at ${newRepoPath}`);
   });
 
 program

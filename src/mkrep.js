@@ -1,7 +1,7 @@
 import { gitAddAll, gitCommit, gitPush, gitRemoteAddOrigin } from "./git.js";
 import {
   createGitIgnore,
-  createLocalRepo,
+  createGitRepository,
   createPackageJson,
   isPathAvailable,
 } from "./lib.js";
@@ -11,7 +11,7 @@ import {
   isGithubRepositoryAvailable,
 } from "./githubAPI.js";
 import untildify from "untildify";
-import { rm } from "node:fs";
+import { rm } from "node:fs/promises";
 
 export default async function mkrep(basePath, repoName, { onReadyToCreate }) {
   basePath = untildify(basePath);
@@ -28,22 +28,23 @@ export default async function mkrep(basePath, repoName, { onReadyToCreate }) {
 
     onReadyToCreate && (await onReadyToCreate(repoPath));
 
-    // create local repo & add node.js essential files
-    await createLocalRepo(repoPath);
-    await Promise.all([createPackageJson(repoPath), createGitIgnore(repoPath)]);
-    await gitAddAll(repoPath);
-    await gitCommit(repoPath, "Initial commit");
+    // create local repo
+    await createGitRepository(repoPath);
 
     // create remote repo
-    const {
-      data: { ssh_url },
-    } = await createGithubRepository(repoName);
+    const { data: githubRepository } = await createGithubRepository(repoName);
+
+    // add node.js essential files
+    await Promise.all([
+      createPackageJson(repoPath, githubRepository),
+      createGitIgnore(repoPath),
+    ]);
+    await gitAddAll(repoPath);
+    await gitCommit(repoPath, "Initial commit ✨");
 
     // push to remote repo
-    await gitRemoteAddOrigin(repoPath, ssh_url);
+    await gitRemoteAddOrigin(repoPath, githubRepository.ssh_url);
     await gitPush(repoPath);
-
-    console.info(`Repo created at ${repoPath}`);
   }
 
   try {
@@ -52,6 +53,14 @@ export default async function mkrep(basePath, repoName, { onReadyToCreate }) {
     if (!(await isPathAvailable(repoPath))) {
       await rm(repoPath, { recursive: true, force: true });
     }
+
+    // if (githubRepositoryData) {
+    //   const { owner, name } = githubRepositoryData;
+    //   await deleteGithubRepository(owner.login, name);
+    // }
+
     throw error;
   }
+
+  return repoPath;
 }

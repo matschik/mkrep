@@ -1,11 +1,16 @@
 {
   "name": "{name}",
   "version": "1.0.0",
-  "description": "",
+  "description": "New project created via mkrep",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node index.js"
+  },
+  "homepage": "{html_url}",
+  "repository": "github:{full_name}",
+  "bugs": {
+    "url": "{issues_url}"
   },
   "keywords": [],
   "author": "",
