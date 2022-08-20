@@ -3,18 +3,17 @@ import { rm, appendFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import fileDirname from "./src/fileDirname.js";
 
+const envPath = join(fileDirname(import.meta.url), ".env");
+
 let parsedEnv = {};
 
 const dotEnvFile = {
-  getPath() {
-    return join(fileDirname(import.meta.url), ".env");
-  },
   async init() {
-    const { parsed, error } = dotenv.config();
+    const { parsed, error } = dotenv.config({ path: envPath });
     parsedEnv = parsed || {};
     if (error) {
       if (error.code === "ENOENT") {
-        await writeFile(this.getPath(), "");
+        await writeFile(envPath, "");
       }
     }
   },
@@ -30,7 +29,7 @@ const dotEnvFile = {
     return parsedEnv[key];
   },
   async reset() {
-    await rm(this.getPath());
+    await rm(envPath);
     parsedEnv = {};
   },
 };

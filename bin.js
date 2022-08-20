@@ -7,6 +7,8 @@ import dotEnvFile from "./dotEnvFile.js";
 import mkrep from "./src/mkrep.js";
 import fileDirname from "./src/fileDirname.js";
 import { readFileSync } from "fs";
+import { execa } from "execa";
+import untildify from "untildify";
 
 dotEnvFile.init();
 
@@ -46,6 +48,19 @@ program
     await dotEnvFile.reset();
   });
 
+program
+  .command("open <repoName>")
+  .description("Open on VSCode")
+  .action(async (repoName) => {
+    const baseDir = await getBaseDir();
+    const p = join(baseDir, repoName);
+    if (await isPathAvailable(p)) {
+      console.error(`${p} not found`);
+      return;
+    }
+    await execa("code", [p]);
+  });
+
 program.parse();
 
 async function getBaseDir() {
@@ -65,7 +80,8 @@ async function getBaseDir() {
       dotEnvFile.set("BASE_DIR", baseDir);
     }
   }
-  return baseDir;
+
+  return untildify(baseDir);
 }
 
 async function getGithubPersonalToken() {
