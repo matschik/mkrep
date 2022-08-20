@@ -10,9 +10,15 @@
 
 ## ⚙️ Setup
 
+1. Create a Github personal access token [here](https://github.com/settings/tokens) with the following scopes: <img src=".github/token-scopes.png" />
+
+2. Install `mkrep`
+
 ```sh
 npm i -g mkrep
 ```
+
+3. Create a project `mkrep my-new-project`, CLI will ask you to enter your Github personal access token & default directory to create the new `mkrep` projects
 
 ## ✨ Usage
 
