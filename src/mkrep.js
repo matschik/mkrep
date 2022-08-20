@@ -13,16 +13,20 @@ import {
 import untildify from "untildify";
 import { rm } from "node:fs";
 
-export default async function mkrep(basePath, repoName) {
+export default async function mkrep(basePath, repoName, { onReadyToCreate }) {
   basePath = untildify(basePath);
   const repoPath = join(basePath, repoName);
 
   async function exec() {
-    // check if repo is available
-    await Promise.all([
-      isGithubRepositoryAvailable(repoName),
-      isPathAvailable(repoPath),
-    ]);
+    if (!(await isGithubRepositoryAvailable(repoName))) {
+      throw new Error(`Github repository '${repoName}' already exists`);
+    }
+
+    if (!(await isPathAvailable(repoPath))) {
+      throw new Error(`'${repoPath}' already exists`);
+    }
+
+    onReadyToCreate && (await onReadyToCreate(repoPath));
 
     // create local repo & add node.js essential files
     await createLocalRepo(repoPath);

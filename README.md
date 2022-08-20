@@ -22,7 +22,7 @@ npm i -g mkrep
 ## ✨ Usage
 
 ```sh
-mkrep my-new-project
+mkrep create my-new-project
 ```
 
 ## 🤔 Why ?
@@ -48,7 +48,7 @@ $ git push -u origin main
 ### With mkrep
 
 ```sh
-mkrep my-new-project
+mkrep create my-new-project
 ```
 
 ## ⚖️ License

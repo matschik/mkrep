@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-import { appendFile, writeFile } from "node:fs/promises";
+import { rm, appendFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import fileDirname from "./src/fileDirname.js";
 
 let parsedEnv = {};
 
@@ -23,6 +25,11 @@ const dotEnvFile = {
   },
   get(key) {
     return parsedEnv[key];
+  },
+  async reset() {
+    const path = join(fileDirname(import.meta.url), ".env");
+    await rm(path);
+    parsedEnv = {};
   },
 };
 

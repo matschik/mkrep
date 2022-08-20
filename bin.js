@@ -19,21 +19,31 @@ const version = JSON.parse(
 program
   .name("mkrep")
   .description("Fast repo creation local & remote with Github")
-  .version(version)
-  .action(async (_, { args }) => {
+  .version(version);
+
+program
+  .command("create <repoName>")
+  .description("Create local & remote repository with Github")
+  .action(async (repoName) => {
     async function exec() {
-      const [repoName] = args;
       await getGithubPersonalToken();
       const baseDir = await getBaseDir();
-      const repoPath = join(baseDir, repoName);
-      const confirmCreate = await confirmCreateRepository(repoPath);
 
-      if (confirmCreate) {
-        await mkrep(baseDir, repoName);
-      }
+      await mkrep(baseDir, repoName, {
+        async onReadyToCreate(p) {
+          await confirmCreateRepository(p);
+        },
+      });
     }
 
     exec().catch(console.error);
+  });
+
+program
+  .command("reset")
+  .description("Reset dotenv file")
+  .action(async () => {
+    await dotEnvFile.reset();
   });
 
 program.parse();
