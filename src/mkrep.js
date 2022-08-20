@@ -10,28 +10,44 @@ import {
   createGithubRepository,
   isGithubRepositoryAvailable,
 } from "./githubAPI.js";
+import untildify from "untildify";
+import { rm } from "node:fs";
 
 export default async function mkrep(basePath, repoName) {
+  basePath = untildify(basePath);
   const repoPath = join(basePath, repoName);
 
-  // check if repo is available
-  await Promise.all([
-    isGithubRepositoryAvailable(repoName),
-    isPathAvailable(repoName),
-  ]);
+  async function exec() {
+    // check if repo is available
+    await Promise.all([
+      isGithubRepositoryAvailable(repoName),
+      isPathAvailable(repoPath),
+    ]);
 
-  // create remote repo
-  const {
-    data: { ssh_url },
-  } = await createGithubRepository(repoName);
+    // create local repo & add node.js essential files
+    await createLocalRepo(repoPath);
+    await Promise.all([createPackageJson(repoPath), createGitIgnore(repoPath)]);
+    await gitAddAll(repoPath);
+    await gitCommit(repoPath, "Initial commit");
 
-  // create local repo & add node.js essential files
-  await createLocalRepo(repoPath);
-  await Promise.all([createPackageJson(repoPath), createGitIgnore(repoPath)]);
-  await gitAddAll(repoPath);
-  await gitCommit(repoPath, "Initial commit");
+    // create remote repo
+    const {
+      data: { ssh_url },
+    } = await createGithubRepository(repoName);
 
-  // push to remote repo
-  await gitRemoteAddOrigin(repoPath, ssh_url);
-  await gitPush(repoPath);
+    // push to remote repo
+    await gitRemoteAddOrigin(repoPath, ssh_url);
+    await gitPush(repoPath);
+
+    console.info(`Repo created at ${repoPath}`);
+  }
+
+  try {
+    await exec();
+  } catch (error) {
+    if (!(await isPathAvailable(repoPath))) {
+      await rm(repoPath, { recursive: true, force: true });
+    }
+    throw error;
+  }
 }

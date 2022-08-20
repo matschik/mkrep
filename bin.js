@@ -38,7 +38,7 @@ async function getBaseDir() {
     baseDir = await askBaseDir();
     baseDirIsAvailable = await isPathAvailable(baseDir);
     if (!baseDirIsAvailable) {
-      console.log(`${baseDir} does not exist`);
+      console.error(`${baseDir} does not exist`);
     }
 
     if (baseDir && baseDirIsAvailable) {
@@ -59,7 +59,7 @@ async function getGithubPersonalToken() {
     // TODO: check token scopes: https://github.com/orgs/community/discussions/24345#discussioncomment-3243862
 
     if (!value.trim()) {
-      console.log(`${value} is not valid`);
+      console.error(`${value} is not valid`);
     }
 
     if (value && isValid) {

@@ -23,6 +23,7 @@
     "dotenv": "^16.0.1",
     "execa": "^6.1.0",
     "inquirer": "^9.1.0",
-    "redaxios": "^0.5.1"
+    "redaxios": "^0.5.1",
+    "untildify": "^4.0.0"
   }
 }

@@ -1,5 +1,6 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import fileDirname from "./fileDirname.js";
 import { gitInit } from "./git.js";
 
 export async function createLocalRepo(path) {
@@ -10,7 +11,10 @@ export async function createLocalRepo(path) {
 
 export async function createPackageJson(basePath, name = "new-js-project") {
   const path = join(basePath, "/package.json");
-  const template = await readFile("template/package.json", "utf8");
+  const template = await readFile(
+    `${fileDirname(import.meta.url)}/template/package.json`,
+    "utf8"
+  );
   await writeFile(path, template.replace("{name}", name));
   return path;
 }
