@@ -6,12 +6,15 @@ import fileDirname from "./src/fileDirname.js";
 let parsedEnv = {};
 
 const dotEnvFile = {
+  getPath() {
+    return join(fileDirname(import.meta.url), ".env");
+  },
   async init() {
     const { parsed, error } = dotenv.config();
     parsedEnv = parsed || {};
     if (error) {
       if (error.code === "ENOENT") {
-        await writeFile(".env", "");
+        await writeFile(this.getPath());
       }
     }
   },
@@ -27,8 +30,7 @@ const dotEnvFile = {
     return parsedEnv[key];
   },
   async reset() {
-    const path = join(fileDirname(import.meta.url), ".env");
-    await rm(path);
+    await rm(this.getPath());
     parsedEnv = {};
   },
 };
