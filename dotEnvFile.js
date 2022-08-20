@@ -14,7 +14,7 @@ const dotEnvFile = {
     parsedEnv = parsed || {};
     if (error) {
       if (error.code === "ENOENT") {
-        await writeFile(this.getPath());
+        await writeFile(this.getPath(), "");
       }
     }
   },
