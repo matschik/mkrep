@@ -21,15 +21,19 @@ program
   .description("Fast repo creation local & remote with Github")
   .version(version)
   .action(async (_, { args }) => {
-    const [repoName] = args;
-    await getGithubPersonalToken();
-    const baseDir = await getBaseDir();
-    const repoPath = join(baseDir, repoName);
-    const confirmCreate = await confirmCreateRepository(repoPath);
+    async function exec() {
+      const [repoName] = args;
+      await getGithubPersonalToken();
+      const baseDir = await getBaseDir();
+      const repoPath = join(baseDir, repoName);
+      const confirmCreate = await confirmCreateRepository(repoPath);
 
-    if (confirmCreate) {
-      await mkrep(baseDir, repoName);
+      if (confirmCreate) {
+        await mkrep(baseDir, repoName);
+      }
     }
+
+    exec().catch(console.error);
   });
 
 program.parse();
