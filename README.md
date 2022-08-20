@@ -4,7 +4,6 @@
 
 ## ✅ Requirements
 
-- SSH Github key
 - NodeJS
 - Git
 
