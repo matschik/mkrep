@@ -1,4 +1,5 @@
 import Conf from "conf";
+import md5 from "./lib/md5.js";
 
 const config = new Conf({
   projectName: `mkrep-${md5(process.cwd())}`,
