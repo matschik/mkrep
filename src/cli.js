@@ -34,7 +34,10 @@ export default function executeCLI() {
 
         const repoPath = await mkrep(baseDir, repoName, {
           async onReadyToCreate(p) {
-            await confirmCreateRepository(p);
+            const confirm = await confirmCreateRepository(p);
+            if (!confirm) {
+              throw new Error("Aborted");
+            }
           },
         });
         console.info(`✨ Repo created at ${repoPath}`);

@@ -1,8 +1,12 @@
 import Conf from "conf";
-//import md5 from "./lib/md5.js";
+import fileDirname from "./lib/fileDirname.js";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+const isGitRepo = existsSync(join(fileDirname(import.meta.url), "../.git"));
 
 const config = new Conf({
-  //projectName: `mkrep-${md5(process.argv.at(-1))}`,
+  projectName: isGitRepo ? "mkrep-global" : "mkrep-local",
   schema: {
     GITHUB_TOKEN: {
       type: "string",
