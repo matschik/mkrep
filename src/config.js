@@ -1,4 +1,6 @@
 import Conf from "conf";
+import fileDirname from "./lib/fileDirname.js";
+import { readFileSync } from "node:fs";
 
 const { name } = JSON.parse(
   readFileSync(join(fileDirname(import.meta.url), "../../package.json"))
