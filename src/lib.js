@@ -21,33 +21,37 @@ export async function renameGithubRepository(repoName, newRepoName) {
   return updatedRepository;
 }
 
-export async function updatePackageJson(pkgJsonPath, data) {
-  const content = await readFile(pkgJsonPath, "utf8");
-  const pkgJson = JSON.parse(content);
-  const newPkgJson = Object.assign({}, pkgJson, data);
-  await writeFile(pkgJsonPath, JSON.stringify(newPkgJson, null, 2));
+export async function updateJsonFile(p, data) {
+  const content = await readFile(p, "utf8");
+  const json = JSON.parse(content);
+  const newJson = Object.assign({}, json, data);
+  await writeFile(p, JSON.stringify(newJson, null, 2));
 }
 
-export async function renameLocalRepository(path, newName, sshURL) {
+export async function renameLocalRepository(path, githubRepository) {
   const pathInfo = await lstat(path);
   if (!pathInfo.isDirectory()) {
     throw new Error(`'${path}' is not a directory`);
   }
 
-  const newPath = path.split(sep).slice(0, -1).concat([newName]).join(sep);
+  const newPath = path
+    .split(sep)
+    .slice(0, -1)
+    .concat([githubRepository.name])
+    .join(sep);
 
   const pkgJsonPath = join(newPath, "package.json");
 
   const pkgJsonAvailable = await isPathAvailable(pkgJsonPath);
 
+  // TODO: replace pkgjson content with github repo data
+
   await Promise.all([
     rename(path, newPath),
-    pkgJsonAvailable
-      ? updatePackageJson(pkgJsonPath, {
-          name: newName,
-        })
+    pkgJsonAvailable ? updateJsonFile(pkgJsonPath, githubRepository) : true,
+    githubRepository?.ssh_url
+      ? gitRemoteUpdateOrigin(newPath, githubRepository.ssh_url)
       : true,
-    sshURL ? gitRemoteUpdateOrigin(newPath, sshURL) : true,
   ]);
 
   return newPath;

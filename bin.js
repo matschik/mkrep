@@ -6,7 +6,7 @@ import {
   isPathAvailable,
   renameGithubRepository,
   renameLocalRepository,
-  updatePackageJson,
+  updateJsonFile,
 } from "./src/lib.js";
 import dotEnvFile from "./dotEnvFile.js";
 import mkrep from "./src/mkrep.js";
@@ -73,10 +73,10 @@ program
       repoName,
       newRepoName
     );
+
     const newRepoPath = await renameLocalRepository(
       repoPath,
-      newRepoName,
-      updatedRepository.ssh_url
+      updatedRepository
     );
 
     console.info(`✨ Repo renamed at ${newRepoPath}`);

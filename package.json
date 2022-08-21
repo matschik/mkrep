@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "commander": "^9.4.0",
+    "conf": "^10.2.0",
     "dotenv": "^16.0.1",
     "execa": "^6.1.0",
     "inquirer": "^9.1.0",
