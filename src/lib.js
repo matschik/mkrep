@@ -11,6 +11,23 @@ import { GITIGNORE_TEMPLATE_URL } from "./constants.js";
 import fileDirname from "./lib/fileDirname.js";
 import { gitInit, gitRemoteUpdateOrigin } from "./lib/git.js";
 
+async function applyGithubRepositoryDataToPkgJson(
+  pkgJsonPath,
+  githubRepository
+) {
+  const { name, description, html_url, full_name, issues_url } =
+    githubRepository;
+  await updateJsonFile(pkgJsonPath, {
+    name,
+    description: description || "",
+    homepage: html_url || "",
+    repository: `github:${full_name}`,
+    bugs: {
+      url: issues_url,
+    },
+  });
+}
+
 export async function updateJsonFile(p, data) {
   const content = await readFile(p, "utf8");
   const json = JSON.parse(content);
@@ -53,18 +70,17 @@ export async function createGitRepository(path) {
   return path;
 }
 
-export async function createPackageJson(basePath, data) {
+export async function createPackageJson(basePath, githubRepository) {
   const path = join(basePath, "/package.json");
-  let template = await readFile(
+  const template = await readFile(
     `${fileDirname(import.meta.url)}/template/package.json`,
     "utf8"
   );
 
-  for (const key of Object.keys(data)) {
-    template = template.replace(`{${key}}`, data[key]);
-  }
-
   await writeFile(path, template);
+
+  await applyGithubRepositoryDataToPkgJson(path, githubRepository);
+
   return path;
 }
 
