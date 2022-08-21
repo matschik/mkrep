@@ -28,8 +28,7 @@ export default function executeCLI() {
     .description("Create local & remote repository with Github")
     .action(async (repoName) => {
       async function exec() {
-        const githubToken = await getGithubPersonalToken();
-        github.setAuthToken(githubToken);
+        await getGithubPersonalToken();
         const baseDir = await getBaseDir();
 
         const repoPath = await mkrep(baseDir, repoName, {
@@ -147,6 +146,8 @@ async function getGithubPersonalToken() {
       config.set("GITHUB_TOKEN", value);
     }
   }
+
+  github.setAuthToken(value);
 
   return value;
 }
