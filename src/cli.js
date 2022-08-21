@@ -27,7 +27,8 @@ export default function executeCLI() {
     .description("Create local & remote repository with Github")
     .action(async (repoName) => {
       async function exec() {
-        await getGithubPersonalToken();
+        const githubToken = await getGithubPersonalToken();
+        github.setAuthToken(githubToken);
         const baseDir = await getBaseDir();
 
         const repoPath = await mkrep(baseDir, repoName, {
