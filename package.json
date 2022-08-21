@@ -1,18 +1,19 @@
 {
+  "name": "mkrep",
   "version": "1.0.23",
   "description": "",
-  "main": "index.js",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
   "type": "module",
+  "main": "index.js",
   "bin": {
     "mkrep": "bin.js"
   },
   "scripts": {
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "test": "vitest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "commander": "^9.4.0",
     "conf": "^10.2.0",
@@ -28,6 +29,5 @@
   "devDependencies": {
     "cuid": "^2.1.8",
     "vitest": "^0.22.1"
-  },
-  "name": "mkrep"
+  }
 }
