@@ -100,11 +100,3 @@ export async function createGitIgnore(basePath) {
   await writeFile(path, content);
   return path;
 }
-
-async function assignRemoteRepoToLocalRepo() {}
-
-async function createRepo(codePath, name) {
-  await mkdir(join(codePath, name));
-
-  // https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
-}

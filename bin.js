@@ -6,12 +6,11 @@ import {
   isPathAvailable,
   renameGithubRepository,
   renameLocalRepository,
-  updateJsonFile,
 } from "./src/lib.js";
 import dotEnvFile from "./dotEnvFile.js";
 import mkrep from "./src/mkrep.js";
 import fileDirname from "./src/fileDirname.js";
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 import { execa } from "execa";
 import untildify from "untildify";
 
