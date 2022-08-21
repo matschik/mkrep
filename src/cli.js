@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import untildify from "untildify";
 import config from "./config.js";
-import fileDirname from "./fileDirname.js";
+import fileDirname from "./lib/fileDirname.js";
 import github from "./github.js";
 import { isPathAvailable, renameLocalRepository } from "./lib.js";
 import mkrep from "./mkrep.js";
@@ -29,8 +29,6 @@ export default function executeCLI() {
       async function exec() {
         await getGithubPersonalToken();
         const baseDir = await getBaseDir();
-
-        return;
 
         const repoPath = await mkrep(baseDir, repoName, {
           async onReadyToCreate(p) {

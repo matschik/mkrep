@@ -7,8 +7,9 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { join, sep } from "node:path";
-import fileDirname from "./fileDirname.js";
-import { gitInit, gitRemoteUpdateOrigin } from "./git.js";
+import { GITIGNORE_TEMPLATE_URL } from "./constants.js";
+import fileDirname from "./lib/fileDirname.js";
+import { gitInit, gitRemoteUpdateOrigin } from "./lib/git.js";
 
 export async function updateJsonFile(p, data) {
   const content = await readFile(p, "utf8");
@@ -81,9 +82,7 @@ export async function isPathAvailable(path) {
 
 export async function createGitIgnore(basePath) {
   const path = join(basePath, "/.gitignore");
-  const response = await fetch(
-    `https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore`
-  );
+  const response = await fetch(GITIGNORE_TEMPLATE_URL);
   const content = await response.text();
 
   await writeFile(path, content);

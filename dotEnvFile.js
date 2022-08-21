@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { rm, appendFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import fileDirname from "./src/fileDirname.js";
+import fileDirname from "./src/lib/fileDirname.js";
 
 const envPath = join(fileDirname(import.meta.url), ".env");
 

@@ -1,7 +1,12 @@
 import { rm } from "node:fs/promises";
 import { join } from "node:path";
 import untildify from "untildify";
-import { gitAddAll, gitCommit, gitPush, gitRemoteAddOrigin } from "./git.js";
+import {
+  gitAddAll,
+  gitCommit,
+  gitPush,
+  gitRemoteAddOrigin,
+} from "./lib/git.js";
 import github from "./github.js";
 import {
   createGitIgnore,
