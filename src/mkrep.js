@@ -1,24 +1,21 @@
+import { rm } from "node:fs/promises";
+import { join } from "node:path";
+import untildify from "untildify";
 import { gitAddAll, gitCommit, gitPush, gitRemoteAddOrigin } from "./git.js";
+import github from "./github.js";
 import {
   createGitIgnore,
   createGitRepository,
   createPackageJson,
   isPathAvailable,
 } from "./lib.js";
-import { join } from "node:path";
-import {
-  createGithubRepository,
-  isGithubRepositoryAvailable,
-} from "./githubAPI.js";
-import untildify from "untildify";
-import { rm } from "node:fs/promises";
 
 export default async function mkrep(basePath, repoName, { onReadyToCreate }) {
   basePath = untildify(basePath);
   const repoPath = join(basePath, repoName);
 
   async function exec() {
-    if (!(await isGithubRepositoryAvailable(repoName))) {
+    if (!(await github.isRepositoryAvailable(repoName))) {
       throw new Error(`Github repository '${repoName}' already exists`);
     }
 
@@ -32,7 +29,7 @@ export default async function mkrep(basePath, repoName, { onReadyToCreate }) {
     await createGitRepository(repoPath);
 
     // create remote repo
-    const { data: githubRepository } = await createGithubRepository(repoName);
+    const { data: githubRepository } = await github.createRepository(repoName);
 
     // add node.js essential files
     await Promise.all([

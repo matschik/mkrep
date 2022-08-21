@@ -1,9 +1,8 @@
-import { describe, it } from "vitest";
-import { createGitRepository, isPathAvailable } from "./lib.js";
 import cuid from "cuid";
-import { expect } from "vitest";
 import { rm, stat } from "node:fs/promises";
 import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import { createGitRepository, isPathAvailable } from "./lib.js";
 
 describe("lib", () => {
   it("createGitRepository", async () => {

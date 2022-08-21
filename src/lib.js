@@ -9,17 +9,6 @@ import {
 import { join, sep } from "node:path";
 import fileDirname from "./fileDirname.js";
 import { gitInit, gitRemoteUpdateOrigin } from "./git.js";
-import { fetchGithubCurrentUser, updateGithubRepository } from "./githubAPI.js";
-
-export async function renameGithubRepository(repoName, newRepoName) {
-  const { data: user } = await fetchGithubCurrentUser();
-  const { data: updatedRepository } = await updateGithubRepository(
-    user.login,
-    repoName,
-    { name: newRepoName }
-  );
-  return updatedRepository;
-}
 
 export async function updateJsonFile(p, data) {
   const content = await readFile(p, "utf8");
