@@ -9,7 +9,6 @@ import fileDirname from "./lib/fileDirname.js";
 import github from "./github.js";
 import { isPathAvailable, renameLocalRepository } from "./lib.js";
 import mkrep from "./mkrep.js";
-import { exec } from "node:child_process";
 
 export default function executeCLI() {
   const program = new Command();
@@ -66,6 +65,7 @@ export default function executeCLI() {
     .description("Rename repository local & remote on Github")
     .action(async (repoName, newRepoName) => {
       async function exec() {
+        await getGithubPersonalToken();
         const baseDir = await getBaseDir();
         const repoPath = join(baseDir, repoName);
         const updatedRepository = await github.renameRepository(
