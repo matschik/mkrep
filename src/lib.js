@@ -51,11 +51,11 @@ export async function renameLocalRepository(path, githubRepository) {
 
   const pkgJsonAvailable = await isPathAvailable(pkgJsonPath);
 
-  // TODO: replace pkgjson content with github repo data
-
   await Promise.all([
     rename(path, newPath),
-    pkgJsonAvailable ? updateJsonFile(pkgJsonPath, githubRepository) : true,
+    pkgJsonAvailable
+      ? applyGithubRepositoryDataToPkgJson(pkgJsonPath, githubRepository)
+      : true,
     githubRepository?.ssh_url
       ? gitRemoteUpdateOrigin(newPath, githubRepository.ssh_url)
       : true,
