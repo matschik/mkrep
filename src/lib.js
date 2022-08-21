@@ -10,6 +10,7 @@ import { join, sep } from "node:path";
 import { GITIGNORE_TEMPLATE_URL } from "./constants.js";
 import fileDirname from "./lib/fileDirname.js";
 import { gitInit, gitRemoteUpdateOrigin } from "./lib/git.js";
+import sortPackageJson from "sort-package-json";
 
 async function applyGithubRepositoryDataToPkgJson(
   pkgJsonPath,
@@ -26,6 +27,9 @@ async function applyGithubRepositoryDataToPkgJson(
       url: issues_url,
     },
   });
+
+  const content = await readFile(pkgJsonPath, "utf8");
+  await writeFile(pkgJsonPath, sortPackageJson(content), "utf8");
 }
 
 export async function updateJsonFile(p, data) {
