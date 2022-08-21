@@ -9,6 +9,7 @@ import fileDirname from "./lib/fileDirname.js";
 import github from "./github.js";
 import { isPathAvailable, renameLocalRepository } from "./lib.js";
 import mkrep from "./mkrep.js";
+import { exec } from "node:child_process";
 
 export default function executeCLI() {
   const program = new Command();
@@ -62,19 +63,23 @@ export default function executeCLI() {
     .command("rename <repoName> <newRepoName>")
     .description("Rename repository local & remote on Github")
     .action(async (repoName, newRepoName) => {
-      const baseDir = await getBaseDir();
-      const repoPath = join(baseDir, repoName);
-      const updatedRepository = await github.renameRepository(
-        repoName,
-        newRepoName
-      );
+      async function exec() {
+        const baseDir = await getBaseDir();
+        const repoPath = join(baseDir, repoName);
+        const updatedRepository = await github.renameRepository(
+          repoName,
+          newRepoName
+        );
 
-      const newRepoPath = await renameLocalRepository(
-        repoPath,
-        updatedRepository
-      );
+        const newRepoPath = await renameLocalRepository(
+          repoPath,
+          updatedRepository
+        );
 
-      console.info(`✨ Repo renamed at ${newRepoPath}`);
+        console.info(`✨ Repo renamed at ${newRepoPath}`);
+      }
+
+      exec().catch(console.error);
     });
 
   program
@@ -88,13 +93,17 @@ export default function executeCLI() {
     .command("open <repoName>")
     .description("Open on VSCode")
     .action(async (repoName) => {
-      const baseDir = await getBaseDir();
-      const p = join(baseDir, repoName);
-      if (await isPathAvailable(p)) {
-        console.error(`${p} not found`);
-        return;
+      async function exec() {
+        const baseDir = await getBaseDir();
+        const p = join(baseDir, repoName);
+        if (await isPathAvailable(p)) {
+          console.error(`${p} not found`);
+          return;
+        }
+        await execa("code", [p]);
       }
-      await execa("code", [p]);
+
+      exec().catch(console.error);
     });
 
   program.parse();
