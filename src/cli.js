@@ -3,6 +3,7 @@ import { execa } from "execa";
 import inquirer from "inquirer";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import tildify from "tildify";
 import untildify from "untildify";
 import config from "./config.js";
 import fileDirname from "./lib/fileDirname.js";
@@ -38,7 +39,7 @@ export default function executeCLI() {
             }
           },
         });
-        console.info(`✨ Repo created at ${repoPath}`);
+        console.info(`✨ Repo created at ${tildify(repoPath)}`);
 
         const { confirm } = await inquirer.prompt([
           {
@@ -78,7 +79,7 @@ export default function executeCLI() {
           updatedRepository
         );
 
-        console.info(`✨ Repo renamed at ${newRepoPath}`);
+        console.info(`✨ Repo renamed at ${tildify(newRepoPath)}`);
       }
 
       exec().catch(console.error);

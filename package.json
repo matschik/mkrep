@@ -1,6 +1,6 @@
 {
   "name": "mkrep",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -20,10 +20,9 @@
     "dotenv": "^16.0.1",
     "execa": "^6.1.0",
     "inquirer": "^9.1.0",
-    "prettier": "^2.7.1",
-    "prettier-plugin-package": "^1.3.0",
     "redaxios": "^0.5.1",
     "sort-package-json": "^1.57.0",
+    "tildify": "^3.0.0",
     "untildify": "^4.0.0"
   },
   "devDependencies": {
