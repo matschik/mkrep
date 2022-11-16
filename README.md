@@ -17,7 +17,7 @@
 npm i -g mkrep
 ```
 
-3. Create a project `mkrep my-new-project`, CLI will ask you to enter your Github personal access token & default directory to create the new `mkrep` projects
+3. Create a project `mkrep create my-new-project`, CLI will ask you to enter your Github personal access token & default directory to create the new `mkrep` projects
 
 ## ✨ Usage
 
